@@ -7,9 +7,12 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app
+      - ./backend:/app  # Code mount
+      - sqlite_data:/app/data  # Database mount directory
     environment:
       - WATCHFILES_FORCE_POLLING=true
+      - DATABASE_URL=sqlite:///./data/shortener.db  # Set database URL
+      - SHORT_URL_LENGTH=6  # Set short URL length
     networks:
       - shortener-network
     command: poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
@@ -35,3 +38,7 @@ services:
 networks:
   shortener-network:
     driver: bridge
+
+volumes:
+  sqlite_data:
+    driver: local
